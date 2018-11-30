@@ -75,7 +75,7 @@ import org.primefaces.util.LangUtils;
         }
         else {
             if (value instanceof Collection) {
-                value = LangUtils.join((Collection)value, config.getReadOnlyMultipleValueSeparator())
+                value = LangUtils.join((Collection)value, config.getReadOnlyMultipleValueSeparator());
             }
 
             writer.writeAttribute("class", "ui-output-readonly", null);
