@@ -46,7 +46,7 @@ import org.primefaces.util.GridLayoutUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectOneRadioRenderer extends SelectOneRenderer {
+public class SelectOneRadioRenderer extends SelectOneRenderer<SelectOneRadio> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -55,14 +55,6 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
                 "javax.faces.SelectOne",
                 "javax.faces.Radio");
         return renderer.getConvertedValue(context, component, submittedValue);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectOneRadio radio = (SelectOneRadio) component;
-
-        encodeMarkup(context, radio);
-        encodeScript(context, radio);
     }
 
     protected void encodeMarkup(FacesContext context, SelectOneRadio radio) throws IOException {

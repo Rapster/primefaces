@@ -36,20 +36,14 @@ import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.HTML;
 import org.primefaces.util.SharedStringBuilder;
 
-public class CheckboxRenderer extends InputRenderer {
+public class CheckboxRenderer extends InputRenderer<Checkbox> {
 
     private static final String SB_BUILD_EVENT = RadioButtonRenderer.class.getName() + "#buildEvent";
 
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        Checkbox checkbox = (Checkbox) component;
+    protected void encodeMarkup(FacesContext context, Checkbox checkbox) throws IOException {
         SelectManyCheckbox selectManyCheckbox = (SelectManyCheckbox) SearchExpressionFacade.resolveComponent(
                 context, checkbox, checkbox.getFor());
 
-        encodeMarkup(context, checkbox, selectManyCheckbox);
-    }
-
-    protected void encodeMarkup(FacesContext context, Checkbox checkbox, SelectManyCheckbox selectManyCheckbox) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String masterClientId = selectManyCheckbox.getClientId(context);
         String clientId = checkbox.getClientId(context);
@@ -69,6 +63,11 @@ public class CheckboxRenderer extends InputRenderer {
         encodeOptionOutput(context, disabled, selectManyCheckbox);
 
         writer.endElement("div");
+    }
+
+    @Override
+    protected void encodeScript(FacesContext context, Checkbox component) throws IOException {
+        /// NOOP
     }
 
     protected void encodeOptionInput(FacesContext context, SelectManyCheckbox selectManyCheckbox, Checkbox checkbox, String id, String name,

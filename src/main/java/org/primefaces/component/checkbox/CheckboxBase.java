@@ -23,13 +23,13 @@
  */
 package org.primefaces.component.checkbox;
 
-import javax.faces.component.UIComponentBase;
+import javax.faces.component.UIInput;
 
 import org.primefaces.component.api.Widget;
 import org.primefaces.util.ComponentUtils;
 
 
-public abstract class CheckboxBase extends UIComponentBase implements Widget {
+abstract class CheckboxBase extends UIInput implements Widget {
 
     public static final String COMPONENT_FAMILY = "org.primefaces.component";
 

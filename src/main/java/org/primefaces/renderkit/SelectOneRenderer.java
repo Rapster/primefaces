@@ -23,12 +23,16 @@
  */
 package org.primefaces.renderkit;
 
-import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UISelectOne;
 import javax.faces.context.FacesContext;
+import java.util.Map;
 
-public abstract class SelectOneRenderer extends SelectRenderer {
+public abstract class SelectOneRenderer<T extends UISelectOne> extends SelectRenderer<T> {
+
+    public SelectOneRenderer() {
+        setReadOnlyDecoder(SelectOneReadOnlyDecoder.INSTANCE);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

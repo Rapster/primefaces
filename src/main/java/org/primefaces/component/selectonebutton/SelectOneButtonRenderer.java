@@ -41,7 +41,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectOneButtonRenderer extends SelectOneRenderer {
+public class SelectOneButtonRenderer extends SelectOneRenderer<SelectOneButton> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -50,14 +50,6 @@ public class SelectOneButtonRenderer extends SelectOneRenderer {
                 "javax.faces.SelectOne",
                 "javax.faces.Radio");
         return renderer.getConvertedValue(context, component, submittedValue);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectOneButton button = (SelectOneButton) component;
-
-        encodeMarkup(context, button);
-        encodeScript(context, button);
     }
 
     protected void encodeMarkup(FacesContext context, SelectOneButton button) throws IOException {

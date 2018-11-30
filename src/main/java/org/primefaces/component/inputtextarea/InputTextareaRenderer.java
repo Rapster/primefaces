@@ -23,15 +23,6 @@
  */
 package org.primefaces.component.inputtextarea;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PhaseId;
-
 import org.primefaces.component.autocomplete.AutoComplete;
 import org.primefaces.event.AutoCompleteEvent;
 import org.primefaces.expression.SearchExpressionFacade;
@@ -40,7 +31,15 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class InputTextareaRenderer extends InputRenderer {
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.faces.event.PhaseId;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+public class InputTextareaRenderer extends InputRenderer<InputTextarea> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -81,8 +80,7 @@ public class InputTextareaRenderer extends InputRenderer {
             encodeSuggestions(context, inputTextarea, query);
         }
         else {
-            encodeMarkup(context, inputTextarea);
-            encodeScript(context, inputTextarea);
+            super.encodeEnd(context, component);
         }
     }
 

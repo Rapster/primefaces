@@ -46,7 +46,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectOneMenuRenderer extends SelectOneRenderer {
+public class SelectOneMenuRenderer extends SelectOneRenderer<SelectOneMenu> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -103,8 +103,7 @@ public class SelectOneMenuRenderer extends SelectOneRenderer {
             encodePanelContent(context, menu, selectItems);
         }
         else {
-            encodeMarkup(context, menu);
-            encodeScript(context, menu);
+            super.encodeEnd(context, component);
         }
     }
 

@@ -42,7 +42,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectManyButtonRenderer extends SelectManyRenderer {
+public class SelectManyButtonRenderer extends SelectManyRenderer<SelectManyButton> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -51,14 +51,6 @@ public class SelectManyButtonRenderer extends SelectManyRenderer {
                 "javax.faces.SelectMany",
                 "javax.faces.Checkbox");
         return renderer.getConvertedValue(context, component, submittedValue);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectManyButton button = (SelectManyButton) component;
-
-        encodeMarkup(context, button);
-        encodeScript(context, button);
     }
 
     protected void encodeMarkup(FacesContext context, SelectManyButton button) throws IOException {

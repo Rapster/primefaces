@@ -33,7 +33,11 @@ import javax.faces.context.ResponseWriter;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.WidgetBuilder;
 
-public class SignatureRenderer extends InputRenderer {
+public class SignatureRenderer extends InputRenderer<Signature> {
+
+    public SignatureRenderer() {
+        setReadOnlyDecoder(null);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -49,14 +53,6 @@ public class SignatureRenderer extends InputRenderer {
         if (base64Value != null) {
             signature.setBase64Value(base64Value);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException {
-        Signature signature = (Signature) component;
-
-        encodeMarkup(facesContext, signature);
-        encodeScript(facesContext, signature);
     }
 
     protected void encodeMarkup(FacesContext context, Signature signature) throws IOException {

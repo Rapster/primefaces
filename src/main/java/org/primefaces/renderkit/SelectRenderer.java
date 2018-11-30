@@ -37,6 +37,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,9 +49,9 @@ import java.util.RandomAccess;
 
 import org.primefaces.util.LangUtils;
 
-public abstract class SelectRenderer extends InputRenderer {
+public abstract class SelectRenderer<T extends UIInput> extends InputRenderer<T> {
 
-    protected List<SelectItem> getSelectItems(FacesContext context, UIInput component) {
+    protected static List<SelectItem> getSelectItems(FacesContext context, UIInput component) {
         List<SelectItem> selectItems = new ArrayList<>();
 
         for (int i = 0; i < component.getChildCount(); i++) {
@@ -133,7 +134,7 @@ public abstract class SelectRenderer extends InputRenderer {
         return selectItems;
     }
 
-    protected SelectItem createSelectItem(FacesContext context, UISelectItems uiSelectItems, Object value, Object label) {
+    protected static SelectItem createSelectItem(FacesContext context, UISelectItems uiSelectItems, Object value, Object label) {
         String var = (String) uiSelectItems.getAttributes().get("var");
         Map<String, Object> attrs = uiSelectItems.getAttributes();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();

@@ -34,7 +34,11 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class RatingRenderer extends InputRenderer {
+public class RatingRenderer extends InputRenderer<Rating> {
+
+    public RatingRenderer() {
+        setReadOnlyDecoder(null);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -58,15 +62,7 @@ public class RatingRenderer extends InputRenderer {
         decodeBehaviors(context, rating);
     }
 
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        Rating rating = (Rating) component;
-
-        encodeMarkup(context, rating);
-        encodeScript(context, rating);
-    }
-
-    private void encodeScript(FacesContext context, Rating rating) throws IOException {
+    protected void encodeScript(FacesContext context, Rating rating) throws IOException {
         String clientId = rating.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.init("Rating", rating.resolveWidgetVar(), clientId)

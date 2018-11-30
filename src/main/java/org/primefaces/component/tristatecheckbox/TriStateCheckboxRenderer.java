@@ -36,7 +36,7 @@ import org.primefaces.util.HTML;
 import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class TriStateCheckboxRenderer extends InputRenderer {
+public class TriStateCheckboxRenderer extends InputRenderer<TriStateCheckbox> {
 
     @Override
     public void decode(final FacesContext context, final UIComponent component) {
@@ -54,14 +54,6 @@ public class TriStateCheckboxRenderer extends InputRenderer {
         if (submittedValue != null) {
             checkbox.setSubmittedValue(submittedValue);
         }
-    }
-
-    @Override
-    public void encodeEnd(final FacesContext context, final UIComponent component) throws IOException {
-        TriStateCheckbox checkbox = (TriStateCheckbox) component;
-
-        encodeMarkup(context, checkbox);
-        encodeScript(context, checkbox);
     }
 
     protected void encodeMarkup(final FacesContext context, final TriStateCheckbox checkbox) throws IOException {

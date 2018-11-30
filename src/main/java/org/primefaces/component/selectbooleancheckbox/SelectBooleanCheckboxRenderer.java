@@ -30,12 +30,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
 
-import org.primefaces.renderkit.InputRenderer;
-import org.primefaces.util.ComponentUtils;
-import org.primefaces.util.HTML;
-import org.primefaces.util.WidgetBuilder;
-
-public class SelectBooleanCheckboxRenderer extends InputRenderer {
+public class SelectBooleanCheckboxRenderer extends InputRenderer<SelectBooleanCheckbox> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -60,14 +55,6 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
 
     protected boolean isChecked(String value) {
         return value.equalsIgnoreCase("on") || value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true");
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectBooleanCheckbox checkbox = (SelectBooleanCheckbox) component;
-
-        encodeMarkup(context, checkbox);
-        encodeScript(context, checkbox);
     }
 
     protected void encodeMarkup(FacesContext context, SelectBooleanCheckbox checkbox) throws IOException {

@@ -35,7 +35,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectBooleanButtonRenderer extends InputRenderer {
+public class SelectBooleanButtonRenderer extends InputRenderer<SelectBooleanButton> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -56,14 +56,6 @@ public class SelectBooleanButtonRenderer extends InputRenderer {
         else {
             button.setSubmittedValue(false);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectBooleanButton button = (SelectBooleanButton) component;
-
-        encodeMarkup(context, button);
-        encodeScript(context, button);
     }
 
     protected void encodeMarkup(FacesContext context, SelectBooleanButton button) throws IOException {

@@ -34,7 +34,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SpinnerRenderer extends InputRenderer {
+public class SpinnerRenderer extends InputRenderer<Spinner> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -64,14 +64,6 @@ public class SpinnerRenderer extends InputRenderer {
         finally {
             spinner.setSubmittedValue(submittedValue);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        Spinner spinner = (Spinner) component;
-
-        encodeMarkup(context, spinner);
-        encodeScript(context, spinner);
     }
 
     protected void encodeScript(FacesContext context, Spinner spinner) throws IOException {

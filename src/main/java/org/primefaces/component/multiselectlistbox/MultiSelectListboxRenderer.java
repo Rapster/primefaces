@@ -40,7 +40,7 @@ import org.primefaces.renderkit.SelectOneRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class MultiSelectListboxRenderer extends SelectOneRenderer {
+public class MultiSelectListboxRenderer extends SelectOneRenderer<MultiSelectListbox> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -49,14 +49,6 @@ public class MultiSelectListboxRenderer extends SelectOneRenderer {
                 "javax.faces.SelectOne",
                 "javax.faces.Listbox");
         return renderer.getConvertedValue(context, component, submittedValue);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        MultiSelectListbox listbox = (MultiSelectListbox) component;
-
-        encodeMarkup(context, listbox);
-        encodeScript(context, listbox);
     }
 
     protected void encodeMarkup(FacesContext context, MultiSelectListbox listbox) throws IOException {

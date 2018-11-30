@@ -33,7 +33,7 @@ import javax.faces.context.ResponseWriter;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.*;
 
-public class InputMaskRenderer extends InputRenderer {
+public class InputMaskRenderer extends InputRenderer<InputMask> {
 
     private static final String REGEX_METACHARS = "<([{\\^-=$!|]})?*+.>";
     private static final String SB_PATTERN = InputMaskRenderer.class.getName() + "#translateMaskIntoRegex";
@@ -115,14 +115,6 @@ public class InputMaskRenderer extends InputRenderer {
             translated = String.valueOf(c);
         }
         return optional ? (translated + "?") : translated;
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        InputMask inputMask = (InputMask) component;
-
-        encodeMarkup(context, inputMask);
-        encodeScript(context, inputMask);
     }
 
     protected void encodeScript(FacesContext context, InputMask inputMask) throws IOException {

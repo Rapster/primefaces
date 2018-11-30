@@ -45,7 +45,7 @@ import org.primefaces.util.GridLayoutUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectManyCheckboxRenderer extends SelectManyRenderer {
+public class SelectManyCheckboxRenderer extends SelectManyRenderer<SelectManyCheckbox> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -54,14 +54,6 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
                 "javax.faces.SelectMany",
                 "javax.faces.Checkbox");
         return renderer.getConvertedValue(context, component, submittedValue);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectManyCheckbox checkbox = (SelectManyCheckbox) component;
-
-        encodeMarkup(context, checkbox);
-        encodeScript(context, checkbox);
     }
 
     protected void encodeMarkup(FacesContext context, SelectManyCheckbox checkbox) throws IOException {

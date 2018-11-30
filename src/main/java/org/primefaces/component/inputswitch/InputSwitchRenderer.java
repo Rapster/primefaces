@@ -34,7 +34,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class InputSwitchRenderer extends InputRenderer {
+public class InputSwitchRenderer extends InputRenderer<InputSwitch> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -55,14 +55,6 @@ public class InputSwitchRenderer extends InputRenderer {
         else {
             inputSwitch.setSubmittedValue(false);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        InputSwitch inputSwitch = (InputSwitch) component;
-
-        encodeMarkup(context, inputSwitch);
-        encodeScript(context, inputSwitch);
     }
 
     protected void encodeMarkup(FacesContext context, InputSwitch inputSwitch) throws IOException {

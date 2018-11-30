@@ -39,7 +39,7 @@ import org.primefaces.util.AgentUtils;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class EditorRenderer extends InputRenderer {
+public class EditorRenderer extends InputRenderer<Editor> {
 
     private static final Logger LOGGER = Logger.getLogger(EditorRenderer.class.getName());
 
@@ -62,14 +62,6 @@ public class EditorRenderer extends InputRenderer {
         }
 
         editor.setSubmittedValue(value);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException {
-        Editor editor = (Editor) component;
-
-        encodeMarkup(facesContext, editor);
-        encodeScript(facesContext, editor);
     }
 
     protected void encodeMarkup(FacesContext context, Editor editor) throws IOException {
@@ -101,7 +93,7 @@ public class EditorRenderer extends InputRenderer {
         writer.endElement("div");
     }
 
-    private void encodeScript(FacesContext context, Editor editor) throws IOException {
+    protected void encodeScript(FacesContext context, Editor editor) throws IOException {
         String clientId = editor.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.init("Editor", editor.resolveWidgetVar(), clientId)

@@ -42,7 +42,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectManyMenuRenderer extends SelectManyRenderer {
+public class SelectManyMenuRenderer extends SelectManyRenderer<SelectManyMenu> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -51,14 +51,6 @@ public class SelectManyMenuRenderer extends SelectManyRenderer {
                 "javax.faces.SelectMany",
                 "javax.faces.Menu");
         return renderer.getConvertedValue(context, component, submittedValue);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectManyMenu menu = (SelectManyMenu) component;
-
-        encodeMarkup(context, menu);
-        encodeScript(context, menu);
     }
 
     protected void encodeMarkup(FacesContext context, SelectManyMenu menu) throws IOException {

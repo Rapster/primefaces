@@ -1,15 +1,15 @@
 /**
  * The MIT License
- *
+ * <p>
  * Copyright (c) 2009-2019 PrimeTek
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
@@ -23,22 +23,72 @@
  */
 package org.primefaces.renderkit;
 
-import java.io.IOException;
+import org.primefaces.component.api.RTLAware;
+import org.primefaces.component.api.ReadOnlyDecoder;
+import org.primefaces.config.PrimeConfiguration;
+import org.primefaces.context.PrimeApplicationContext;
+import org.primefaces.util.ComponentUtils;
+import org.primefaces.util.HTML;
+import org.primefaces.util.LangUtils;
+
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import java.io.IOException;
+import java.util.Collection;
 
-import org.primefaces.component.api.InputHolder;
-import org.primefaces.component.api.RTLAware;
-
-import org.primefaces.util.ComponentUtils;
-import org.primefaces.util.HTML;
+public abstract class InputRenderer<T extends UIInput> extends CoreRenderer {
 import org.primefaces.util.LangUtils;
 
-public abstract class InputRenderer extends CoreRenderer {
+    private ReadOnlyDecoder readOnlyDecoder;
+
+    public InputRenderer() {
+        this.readOnlyDecoder = DefaultReadOnlyDecoder.INSTANCE;
+    }
+
+    @Override
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+        PrimeConfiguration config = PrimeApplicationContext.getCurrentInstance(context).getConfig();
+        if (readOnlyDecoder != null
+                && isReadOnly((UIInput) component)
+                && config.isDisplayReadOnlyAsText()) {
+            encodeReadOnly(context, component, config);
+        } else {
+            encodeMarkup(context, (T) component);
+            encodeScript(context, (T) component);
+        }
+    }
+
+    protected void encodeReadOnly(FacesContext context, UIComponent component, PrimeConfiguration config) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        writer.startElement("span", component);
+
+        Object value = readOnlyDecoder.decodeReadOnlyValue(context, (UIInput) component);
+        if (value == null
+                || (value instanceof String && LangUtils.isValueBlank((String) value))
+                || (value instanceof Collection && ((Collection) value).isEmpty())) {
+            writer.writeAttribute("class", "ui-output-readonly-empty", null);
+            value = config.getReadOnlyEmptyValue();
+        }
+        else {
+            if (value instanceof Collection) {
+                value = LangUtils.join((Collection)value, config.getReadOnlyMultipleValueSeparator())
+            }
+
+            writer.writeAttribute("class", "ui-output-readonly", null);
+        }
+
+        writer.write((String) value);
+
+        writer.endElement("span");
+    }
+
+    protected abstract void encodeMarkup(FacesContext context, T component) throws IOException;
+
+    protected abstract void encodeScript(FacesContext context, T component) throws IOException;
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -74,7 +124,7 @@ public abstract class InputRenderer extends CoreRenderer {
     /**
      * Adds "aria-required" if the component is required.
      *
-     * @param context the {@link FacesContext}
+     * @param context   the {@link FacesContext}
      * @param component the {@link UIInput} component to add attributes for
      * @throws IOException if any error occurs writing the response
      */
@@ -88,7 +138,7 @@ public abstract class InputRenderer extends CoreRenderer {
     /**
      * Adds "aria-invalid" if the component is invalid.
      *
-     * @param context the {@link FacesContext}
+     * @param context   the {@link FacesContext}
      * @param component the {@link UIInput} component to add attributes for
      * @throws IOException if any error occurs writing the response
      */
@@ -108,7 +158,8 @@ public abstract class InputRenderer extends CoreRenderer {
      * "disabled" and "aria-disabled" if the component is disabled
      * "readonly" and "aria-readonly" if the component is readonly
      * </pre>
-     * @param context the {@link FacesContext}
+     *
+     * @param context   the {@link FacesContext}
      * @param component the {@link UIInput} component to add attributes for
      * @throws IOException if any error occurs writing the response
      */
@@ -117,7 +168,7 @@ public abstract class InputRenderer extends CoreRenderer {
     }
 
     protected void renderAccessibilityAttributes(FacesContext context, UIInput component, boolean disabled, boolean readonly)
-                throws IOException {
+            throws IOException {
         ResponseWriter writer = context.getResponseWriter();
 
         renderARIARequired(context, component);
@@ -145,7 +196,7 @@ public abstract class InputRenderer extends CoreRenderer {
     /**
      * Adds ARIA attributes if the component is "role=combobox".
      *
-     * @param context the {@link FacesContext}
+     * @param context   the {@link FacesContext}
      * @param component the {@link UIInput} component to add attributes for
      * @throws IOException if any error occurs writing the response
      * @see https://www.w3.org/TR/wai-aria-practices/#combobox
@@ -157,4 +208,7 @@ public abstract class InputRenderer extends CoreRenderer {
         writer.writeAttribute(HTML.ARIA_EXPANDED, "false", null);
     }
 
+    protected void setReadOnlyDecoder(ReadOnlyDecoder readOnlyDecoder) {
+        this.readOnlyDecoder = readOnlyDecoder;
+    }
 }

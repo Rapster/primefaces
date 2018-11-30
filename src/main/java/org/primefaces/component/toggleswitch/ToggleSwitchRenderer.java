@@ -34,7 +34,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class ToggleSwitchRenderer extends InputRenderer {
+public class ToggleSwitchRenderer extends InputRenderer<ToggleSwitch> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -55,14 +55,6 @@ public class ToggleSwitchRenderer extends InputRenderer {
         else {
             toggleSwitch.setSubmittedValue(false);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        ToggleSwitch toggleSwitch = (ToggleSwitch) component;
-
-        encodeMarkup(context, toggleSwitch);
-        encodeScript(context, toggleSwitch);
     }
 
     protected void encodeMarkup(FacesContext context, ToggleSwitch toggleSwitch) throws IOException {

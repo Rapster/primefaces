@@ -41,7 +41,7 @@ import org.primefaces.component.inputtext.InputText;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.*;
 
-public class InputNumberRenderer extends InputRenderer {
+public class InputNumberRenderer extends InputRenderer<InputNumber> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
@@ -126,11 +126,21 @@ public class InputNumberRenderer extends InputRenderer {
             valueToRender = "";
         }
 
-        encodeMarkup(context, inputNumber, value, valueToRender);
+        encodeMarkup(context, inputNumber, valueToRender);
         encodeScript(context, inputNumber, value, valueToRender);
     }
 
-    protected void encodeMarkup(FacesContext context, InputNumber inputNumber, Object value, String valueToRender)
+    @Override
+    protected void encodeMarkup(FacesContext context, InputNumber component) throws IOException {
+
+    }
+
+    @Override
+    protected void encodeScript(FacesContext context, InputNumber component) throws IOException {
+
+    }
+
+    protected void encodeMarkup(FacesContext context, InputNumber inputNumber, String valueToRender)
             throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = inputNumber.getClientId(context);

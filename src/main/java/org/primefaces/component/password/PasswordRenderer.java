@@ -35,7 +35,7 @@ import org.primefaces.util.HTML;
 import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class PasswordRenderer extends InputRenderer {
+public class PasswordRenderer extends InputRenderer<Password> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -52,14 +52,6 @@ public class PasswordRenderer extends InputRenderer {
         if (submittedValue != null) {
             password.setSubmittedValue(submittedValue);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        Password password = (Password) component;
-
-        encodeMarkup(context, password);
-        encodeScript(context, password);
     }
 
     protected void encodeScript(FacesContext context, Password password) throws IOException {

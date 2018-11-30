@@ -41,7 +41,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class SelectOneListboxRenderer extends SelectOneRenderer {
+public class SelectOneListboxRenderer extends SelectOneRenderer<SelectOneListbox> {
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
@@ -50,14 +50,6 @@ public class SelectOneListboxRenderer extends SelectOneRenderer {
                 "javax.faces.SelectOne",
                 "javax.faces.Listbox");
         return renderer.getConvertedValue(context, component, submittedValue);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectOneListbox listbox = (SelectOneListbox) component;
-
-        encodeMarkup(context, listbox);
-        encodeScript(context, listbox);
     }
 
     protected void encodeMarkup(FacesContext context, SelectOneListbox listbox) throws IOException {

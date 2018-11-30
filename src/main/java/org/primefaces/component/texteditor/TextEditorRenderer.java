@@ -41,7 +41,7 @@ import org.primefaces.util.EscapeUtils;
 import org.primefaces.util.HtmlSanitizer;
 import org.primefaces.util.WidgetBuilder;
 
-public class TextEditorRenderer extends InputRenderer {
+public class TextEditorRenderer extends InputRenderer<TextEditor> {
 
     private static final Logger LOGGER = Logger.getLogger(TextEditorRenderer.class.getName());
 
@@ -76,14 +76,6 @@ public class TextEditorRenderer extends InputRenderer {
         }
 
         editor.setSubmittedValue(value);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException {
-        TextEditor editor = (TextEditor) component;
-
-        encodeMarkup(facesContext, editor);
-        encodeScript(facesContext, editor);
     }
 
     protected void encodeMarkup(FacesContext context, TextEditor editor) throws IOException {
@@ -132,7 +124,7 @@ public class TextEditorRenderer extends InputRenderer {
         writer.endElement("div");
     }
 
-    private void encodeScript(FacesContext context, TextEditor editor) throws IOException {
+    protected void encodeScript(FacesContext context, TextEditor editor) throws IOException {
         String clientId = editor.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.init("TextEditor", editor.resolveWidgetVar(), clientId)

@@ -36,7 +36,7 @@ import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class ColorPickerRenderer extends InputRenderer {
+public class ColorPickerRenderer extends InputRenderer<ColorPicker> {
 
     private static final Pattern COLOR_HEX_PATTERN = Pattern.compile("([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})");
 
@@ -81,6 +81,16 @@ public class ColorPickerRenderer extends InputRenderer {
 
         encodeMarkup(context, colorPicker, value);
         encodeScript(context, colorPicker, value);
+    }
+
+    @Override
+    protected void encodeMarkup(FacesContext context, ColorPicker component) throws IOException {
+
+    }
+
+    @Override
+    protected void encodeScript(FacesContext context, ColorPicker component) throws IOException {
+
     }
 
     protected void encodeMarkup(FacesContext context, ColorPicker colorPicker, String value) throws IOException {

@@ -34,6 +34,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
+import org.primefaces.component.api.UIItemsReadOnlyDecoder;
 import org.primefaces.component.column.Column;
 import org.primefaces.model.DualListModel;
 import org.primefaces.renderkit.InputRenderer;
@@ -41,7 +42,11 @@ import org.primefaces.renderkit.RendererUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class PickListRenderer extends InputRenderer {
+public class PickListRenderer extends InputRenderer<PickList> {
+
+    public PickListRenderer() {
+        setReadOnlyDecoder(UIItemsReadOnlyDecoder.INSTANCE);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -49,6 +54,7 @@ public class PickListRenderer extends InputRenderer {
         if (!shouldDecode(pickList)) {
             return;
         }
+
         String clientId = pickList.getClientId(context);
         Map<String, String[]> params = context.getExternalContext().getRequestParameterValuesMap();
 
@@ -61,14 +67,6 @@ public class PickListRenderer extends InputRenderer {
         pickList.setSubmittedValue(new String[][]{sourceParam, targetParam});
 
         decodeBehaviors(context, pickList);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException {
-        PickList pickList = (PickList) component;
-
-        encodeMarkup(facesContext, pickList);
-        encodeScript(facesContext, pickList);
     }
 
     protected void encodeMarkup(FacesContext context, PickList pickList) throws IOException {

@@ -41,7 +41,7 @@ import org.primefaces.util.HTML;
 import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class ChipsRenderer extends InputRenderer {
+public class ChipsRenderer extends InputRenderer<Chips> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -74,14 +74,6 @@ public class ChipsRenderer extends InputRenderer {
         }
 
         decodeBehaviors(context, chips);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        Chips chips = (Chips) component;
-
-        encodeMarkup(context, chips);
-        encodeScript(context, chips);
     }
 
     protected void encodeMarkup(FacesContext context, Chips chips) throws IOException {

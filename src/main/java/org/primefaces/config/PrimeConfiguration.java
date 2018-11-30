@@ -51,6 +51,9 @@ public class PrimeConfiguration {
     private final boolean earlyPostParamEvaluation;
     private final boolean moveScriptsToBottom;
     private boolean csp;
+    private boolean displayReadOnlyAsText = false;
+    private String readOnlyEmptyValue = null;
+    private String readOnlyMultipleValueSeparator = null;
 
     // internal config
     private final boolean stringConverterAvailable;
@@ -116,6 +119,15 @@ public class PrimeConfiguration {
 
         value = externalContext.getInitParameter(Constants.ContextParams.CSP);
         csp = (value == null) ? false : Boolean.valueOf(value);
+
+        value = externalContext.getInitParameter(Constants.ContextParams.DISPLAY_READ_ONLY_AS_TEXT);
+        displayReadOnlyAsText = (value == null) ? false : Boolean.valueOf(value);
+
+        value = externalContext.getInitParameter(Constants.ContextParams.READ_ONLY_EMPTY_VALUE);
+        readOnlyEmptyValue = (value == null) ? "" : value;
+
+        value = externalContext.getInitParameter(Constants.ContextParams.READ_ONLY_MULTIPLE_VALUE_SEPARATOR);
+        readOnlyMultipleValueSeparator = (value == null) ? ", " : value;
     }
 
     protected boolean resolveValidateEmptyFields(FacesContext context, PrimeEnvironment environment) {
@@ -211,5 +223,29 @@ public class PrimeConfiguration {
 
     public boolean isCsp() {
         return csp;
+    }
+
+    public void setDisplayReadOnlyAsText(boolean displayReadOnlyAsText) {
+        this.displayReadOnlyAsText = displayReadOnlyAsText;
+    }
+
+    public boolean isDisplayReadOnlyAsText() {
+        return displayReadOnlyAsText;
+    }
+
+    public String getReadOnlyEmptyValue() {
+        return readOnlyEmptyValue;
+    }
+
+    public void setReadOnlyEmptyValue(String readOnlyEmptyValue) {
+        this.readOnlyEmptyValue = readOnlyEmptyValue;
+    }
+
+    public String getReadOnlyMultipleValueSeparator() {
+        return readOnlyMultipleValueSeparator;
+    }
+
+    public void setReadOnlyMultipleValueSeparator(String readOnlyMultipleValueSeparator) {
+        this.readOnlyMultipleValueSeparator = readOnlyMultipleValueSeparator;
     }
 }

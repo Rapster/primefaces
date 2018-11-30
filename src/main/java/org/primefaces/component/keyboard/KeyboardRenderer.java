@@ -34,7 +34,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class KeyboardRenderer extends InputRenderer {
+public class KeyboardRenderer extends InputRenderer<Keyboard> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -52,14 +52,6 @@ public class KeyboardRenderer extends InputRenderer {
         if (submittedValue != null) {
             keyboard.setSubmittedValue(submittedValue);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        Keyboard keyboard = (Keyboard) component;
-
-        encodeMarkup(context, keyboard);
-        encodeScript(context, keyboard);
     }
 
     protected void encodeScript(FacesContext context, Keyboard keyboard) throws IOException {

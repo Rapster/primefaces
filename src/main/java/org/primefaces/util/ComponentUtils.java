@@ -475,7 +475,7 @@ public class ComponentUtils {
     }
 
     /**
-     * Duplicate code from OmniFacew project under apache license:
+     * Duplicate code from OmniFaces project under apache license:
      * https://github.com/omnifaces/omnifaces/blob/develop/license.txt
      * <p>
      * URI-encode the given string using UTF-8. URIs (paths and filenames) have different encoding rules as compared to

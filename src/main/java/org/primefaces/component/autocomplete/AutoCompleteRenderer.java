@@ -33,6 +33,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.event.PhaseId;
 
+import org.primefaces.component.api.UIItemsReadOnlyDecoder;
 import org.primefaces.component.column.Column;
 import org.primefaces.event.AutoCompleteEvent;
 import org.primefaces.expression.SearchExpressionFacade;
@@ -42,7 +43,11 @@ import org.primefaces.util.HTML;
 import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class AutoCompleteRenderer extends InputRenderer {
+public class AutoCompleteRenderer extends InputRenderer<AutoComplete> {
+
+    public AutoCompleteRenderer() {
+        setReadOnlyDecoder(UIItemsReadOnlyDecoder.INSTANCE);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -118,8 +123,7 @@ public class AutoCompleteRenderer extends InputRenderer {
             }
         }
         else {
-            encodeMarkup(context, autoComplete);
-            encodeScript(context, autoComplete);
+            super.encodeEnd(context, component);
         }
     }
 

@@ -30,7 +30,11 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UISelectMany;
 import javax.faces.context.FacesContext;
 
-public abstract class SelectManyRenderer extends SelectRenderer {
+public abstract class SelectManyRenderer<T extends UISelectMany> extends SelectRenderer<T> {
+
+    public SelectManyRenderer() {
+        setReadOnlyDecoder(SelectManyReadOnlyDecoder.INSTANCE);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

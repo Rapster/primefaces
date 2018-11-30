@@ -35,7 +35,7 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
-public class InputTextRenderer extends InputRenderer {
+public class InputTextRenderer extends InputRenderer<InputText> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -53,14 +53,6 @@ public class InputTextRenderer extends InputRenderer {
         if (submittedValue != null) {
             inputText.setSubmittedValue(submittedValue);
         }
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        InputText inputText = (InputText) component;
-
-        encodeMarkup(context, inputText);
-        encodeScript(context, inputText);
     }
 
     protected void encodeScript(FacesContext context, InputText inputText) throws IOException {

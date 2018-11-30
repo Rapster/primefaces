@@ -35,20 +35,14 @@ import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.HTML;
 import org.primefaces.util.SharedStringBuilder;
 
-public class RadioButtonRenderer extends InputRenderer {
+public class RadioButtonRenderer extends InputRenderer<RadioButton> {
 
     private static final String SB_BUILD_EVENT = RadioButtonRenderer.class.getName() + "#buildEvent";
 
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        RadioButton radioButton = (RadioButton) component;
+    protected void encodeMarkup(FacesContext context, RadioButton radio) throws IOException {
         SelectOneRadio selectOneRadio = (SelectOneRadio) SearchExpressionFacade.resolveComponent(
-                context, radioButton, radioButton.getFor());
+                context, radio, radio.getFor());
 
-        encodeMarkup(context, radioButton, selectOneRadio);
-    }
-
-    protected void encodeMarkup(FacesContext context, RadioButton radio, SelectOneRadio selectOneRadio) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String masterClientId = selectOneRadio.getClientId(context);
         String inputId = selectOneRadio.getRadioButtonId(context);
@@ -71,6 +65,11 @@ public class RadioButtonRenderer extends InputRenderer {
         encodeOptionOutput(context, disabled, selectOneRadio);
 
         writer.endElement("div");
+    }
+
+    @Override
+    protected void encodeScript(FacesContext context, RadioButton component) throws IOException {
+        // NOOP
     }
 
     protected void encodeOptionInput(FacesContext context, SelectOneRadio radio, RadioButton button, String id, String name,

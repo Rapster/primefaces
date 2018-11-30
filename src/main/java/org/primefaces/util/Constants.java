@@ -46,6 +46,9 @@ public class Constants {
         public static final String EARLY_POST_PARAM_EVALUATION = "primefaces.EARLY_POST_PARAM_EVALUATION";
         public static final String MOVE_SCRIPTS_TO_BOTTOM = "primefaces.MOVE_SCRIPTS_TO_BOTTOM";
         public static final String CSP = "primefaces.CSP";
+        public static final String DISPLAY_READ_ONLY_AS_TEXT = "primefaces.DISPLAY_READ_ONLY_AS_TEXT";
+        public static final String READ_ONLY_MULTIPLE_VALUE_SEPARATOR = "primefaces.READ_ONLY_MULTIPLE_VALUE_SEPARATOR\"";
+        public static final String READ_ONLY_EMPTY_VALUE = "primefaces.READ_ONLY_EMPTY_VALUE";
     }
 
     public static class RequestParams {
