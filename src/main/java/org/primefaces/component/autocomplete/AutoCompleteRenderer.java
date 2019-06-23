@@ -23,16 +23,6 @@
  */
 package org.primefaces.component.autocomplete;
 
-import java.io.IOException;
-import java.util.*;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.event.PhaseId;
-
 import org.primefaces.component.api.UIItemsReadOnlyDecoder;
 import org.primefaces.component.column.Column;
 import org.primefaces.event.AutoCompleteEvent;
@@ -42,6 +32,15 @@ import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.event.PhaseId;
+import java.io.IOException;
+import java.util.*;
 
 public class AutoCompleteRenderer extends InputRenderer<AutoComplete> {
 
@@ -140,6 +139,7 @@ public class AutoCompleteRenderer extends InputRenderer<AutoComplete> {
         encodeSuggestions(context, ac, results);
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, AutoComplete ac) throws IOException {
         if (ac.isMultiple()) {
             encodeMultipleMarkup(context, ac);
@@ -659,6 +659,7 @@ public class AutoCompleteRenderer extends InputRenderer<AutoComplete> {
         }
     }
 
+    @Override
     protected void encodeScript(FacesContext context, AutoComplete ac) throws IOException {
         String clientId = ac.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);

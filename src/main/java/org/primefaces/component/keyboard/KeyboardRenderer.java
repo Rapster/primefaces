@@ -23,16 +23,15 @@
  */
 package org.primefaces.component.keyboard;
 
-import java.io.IOException;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import java.io.IOException;
 
 public class KeyboardRenderer extends InputRenderer<Keyboard> {
 
@@ -54,6 +53,7 @@ public class KeyboardRenderer extends InputRenderer<Keyboard> {
         }
     }
 
+    @Override
     protected void encodeScript(FacesContext context, Keyboard keyboard) throws IOException {
         String clientId = keyboard.getClientId(context);
 
@@ -84,6 +84,7 @@ public class KeyboardRenderer extends InputRenderer<Keyboard> {
         wb.finish();
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, Keyboard keyboard) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = keyboard.getClientId(context);

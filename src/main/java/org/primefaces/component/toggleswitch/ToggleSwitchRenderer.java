@@ -23,16 +23,15 @@
  */
 package org.primefaces.component.toggleswitch;
 
-import java.io.IOException;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import java.io.IOException;
 
 public class ToggleSwitchRenderer extends InputRenderer<ToggleSwitch> {
 
@@ -57,6 +56,7 @@ public class ToggleSwitchRenderer extends InputRenderer<ToggleSwitch> {
         }
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, ToggleSwitch toggleSwitch) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = toggleSwitch.getClientId(context);
@@ -120,6 +120,7 @@ public class ToggleSwitchRenderer extends InputRenderer<ToggleSwitch> {
         writer.endElement("div");
     }
 
+    @Override
     protected void encodeScript(FacesContext context, ToggleSwitch toggleSwitch) throws IOException {
         String clientId = toggleSwitch.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);

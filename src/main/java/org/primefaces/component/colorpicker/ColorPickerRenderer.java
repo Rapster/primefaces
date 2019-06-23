@@ -23,20 +23,21 @@
  */
 package org.primefaces.component.colorpicker;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.regex.Pattern;
+import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.HTML;
+import org.primefaces.util.WidgetBuilder;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
-
-import org.primefaces.renderkit.InputRenderer;
-import org.primefaces.util.HTML;
-import org.primefaces.util.WidgetBuilder;
+import java.io.IOException;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ColorPickerRenderer extends InputRenderer<ColorPicker> {
+
+    private String value;
 
     private static final Pattern COLOR_HEX_PATTERN = Pattern.compile("([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})");
 
@@ -68,32 +69,18 @@ public class ColorPickerRenderer extends InputRenderer<ColorPicker> {
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+        super.encodeBegin(context, component);
+
         ColorPicker colorPicker = (ColorPicker) component;
         Converter converter = colorPicker.getConverter();
-        String value;
-        if (converter != null) {
-            value = converter.getAsString(context, component, colorPicker.getValue());
-        }
-        else {
-            value = (String) colorPicker.getValue();
-        }
-
-        encodeMarkup(context, colorPicker, value);
-        encodeScript(context, colorPicker, value);
+        value = converter != null
+                ? converter.getAsString(context, component, colorPicker.getValue())
+                : (String) colorPicker.getValue();
     }
 
     @Override
-    protected void encodeMarkup(FacesContext context, ColorPicker component) throws IOException {
-
-    }
-
-    @Override
-    protected void encodeScript(FacesContext context, ColorPicker component) throws IOException {
-
-    }
-
-    protected void encodeMarkup(FacesContext context, ColorPicker colorPicker, String value) throws IOException {
+    protected void encodeMarkup(FacesContext context, ColorPicker colorPicker) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = colorPicker.getClientId(context);
         String inputId = clientId + "_input";
@@ -168,7 +155,8 @@ public class ColorPickerRenderer extends InputRenderer<ColorPicker> {
         writer.endElement("div");
     }
 
-    protected void encodeScript(FacesContext context, ColorPicker colorPicker, String value) throws IOException {
+    @Override
+    protected void encodeScript(FacesContext context, ColorPicker colorPicker) throws IOException {
         String clientId = colorPicker.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
 

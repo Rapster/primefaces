@@ -23,15 +23,14 @@
  */
 package org.primefaces.component.signature;
 
-import java.io.IOException;
-import java.util.Map;
+import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.WidgetBuilder;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-
-import org.primefaces.renderkit.InputRenderer;
-import org.primefaces.util.WidgetBuilder;
+import java.io.IOException;
+import java.util.Map;
 
 public class SignatureRenderer extends InputRenderer<Signature> {
 
@@ -55,6 +54,7 @@ public class SignatureRenderer extends InputRenderer<Signature> {
         }
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, Signature signature) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = signature.getClientId(context);
@@ -81,6 +81,7 @@ public class SignatureRenderer extends InputRenderer<Signature> {
         writer.endElement("div");
     }
 
+    @Override
     protected void encodeScript(FacesContext context, Signature signature) throws IOException {
         String clientId = signature.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);

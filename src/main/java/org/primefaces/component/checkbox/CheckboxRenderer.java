@@ -23,12 +23,6 @@
  */
 package org.primefaces.component.checkbox;
 
-import java.io.IOException;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import org.primefaces.component.radiobutton.RadioButtonRenderer;
 import org.primefaces.component.selectmanycheckbox.SelectManyCheckbox;
 import org.primefaces.expression.SearchExpressionFacade;
@@ -36,10 +30,15 @@ import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.HTML;
 import org.primefaces.util.SharedStringBuilder;
 
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import java.io.IOException;
+
 public class CheckboxRenderer extends InputRenderer<Checkbox> {
 
     private static final String SB_BUILD_EVENT = RadioButtonRenderer.class.getName() + "#buildEvent";
 
+    @Override
     protected void encodeMarkup(FacesContext context, Checkbox checkbox) throws IOException {
         SelectManyCheckbox selectManyCheckbox = (SelectManyCheckbox) SearchExpressionFacade.resolveComponent(
                 context, checkbox, checkbox.getFor());

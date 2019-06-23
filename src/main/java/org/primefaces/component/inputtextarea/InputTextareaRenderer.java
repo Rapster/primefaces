@@ -104,6 +104,7 @@ public class InputTextareaRenderer extends InputRenderer<InputTextarea> {
         writer.endElement("ul");
     }
 
+    @Override
     protected void encodeScript(FacesContext context, InputTextarea inputTextarea) throws IOException {
         String clientId = inputTextarea.getClientId(context);
         boolean autoResize = inputTextarea.isAutoResize();
@@ -131,6 +132,7 @@ public class InputTextareaRenderer extends InputRenderer<InputTextarea> {
         wb.finish();
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, InputTextarea inputTextarea) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = inputTextarea.getClientId(context);

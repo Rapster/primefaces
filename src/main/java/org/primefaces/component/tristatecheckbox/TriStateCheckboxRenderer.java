@@ -23,18 +23,13 @@
  */
 package org.primefaces.component.tristatecheckbox;
 
-import java.io.IOException;
+import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.*;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-
-import org.primefaces.renderkit.InputRenderer;
-import org.primefaces.util.ComponentUtils;
-import org.primefaces.util.EscapeUtils;
-import org.primefaces.util.HTML;
-import org.primefaces.util.LangUtils;
-import org.primefaces.util.WidgetBuilder;
+import java.io.IOException;
 
 public class TriStateCheckboxRenderer extends InputRenderer<TriStateCheckbox> {
 
@@ -56,6 +51,7 @@ public class TriStateCheckboxRenderer extends InputRenderer<TriStateCheckbox> {
         }
     }
 
+    @Override
     protected void encodeMarkup(final FacesContext context, final TriStateCheckbox checkbox) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = checkbox.getClientId(context);
@@ -187,6 +183,7 @@ public class TriStateCheckboxRenderer extends InputRenderer<TriStateCheckbox> {
         }
     }
 
+    @Override
     protected void encodeScript(final FacesContext context, final TriStateCheckbox checkbox) throws IOException {
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.init("TriStateCheckbox", checkbox.resolveWidgetVar(), checkbox.getClientId());

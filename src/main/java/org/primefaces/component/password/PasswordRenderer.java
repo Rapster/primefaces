@@ -23,17 +23,16 @@
  */
 package org.primefaces.component.password;
 
-import java.io.IOException;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.util.LangUtils;
 import org.primefaces.util.WidgetBuilder;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import java.io.IOException;
 
 public class PasswordRenderer extends InputRenderer<Password> {
 
@@ -54,6 +53,7 @@ public class PasswordRenderer extends InputRenderer<Password> {
         }
     }
 
+    @Override
     protected void encodeScript(FacesContext context, Password password) throws IOException {
         String clientId = password.getClientId(context);
         boolean feedback = password.isFeedback();
@@ -72,6 +72,7 @@ public class PasswordRenderer extends InputRenderer<Password> {
         wb.finish();
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, Password password) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = password.getClientId(context);

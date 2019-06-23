@@ -23,11 +23,9 @@
  */
 package org.primefaces.component.inputnumber;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import org.primefaces.component.inputtext.InputText;
+import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.*;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -36,12 +34,17 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-
-import org.primefaces.component.inputtext.InputText;
-import org.primefaces.renderkit.InputRenderer;
-import org.primefaces.util.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Objects;
 
 public class InputNumberRenderer extends InputRenderer<InputNumber> {
+
+    protected String markupValue;
+    protected Object widgetValue;
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
@@ -117,31 +120,16 @@ public class InputNumberRenderer extends InputRenderer<InputNumber> {
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+        super.encodeBegin(context, component);
         InputNumber inputNumber = (InputNumber) component;
 
-        Object value = inputNumber.getValue();
-        String valueToRender = ComponentUtils.getValueToRender(context, inputNumber, value);
-        if (valueToRender == null) {
-            valueToRender = "";
-        }
-
-        encodeMarkup(context, inputNumber, valueToRender);
-        encodeScript(context, inputNumber, value, valueToRender);
+        widgetValue = inputNumber.getValue();
+        markupValue = Objects.toString(ComponentUtils.getValueToRender(context, inputNumber, widgetValue), Constants.EMPTY_STRING);
     }
 
     @Override
-    protected void encodeMarkup(FacesContext context, InputNumber component) throws IOException {
-
-    }
-
-    @Override
-    protected void encodeScript(FacesContext context, InputNumber component) throws IOException {
-
-    }
-
-    protected void encodeMarkup(FacesContext context, InputNumber inputNumber, String valueToRender)
-            throws IOException {
+    protected void encodeMarkup(FacesContext context, InputNumber inputNumber) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = inputNumber.getClientId(context);
 
@@ -157,8 +145,8 @@ public class InputNumberRenderer extends InputRenderer<InputNumber> {
             writer.writeAttribute("style", inputNumber.getStyle(), "style");
         }
 
-        encodeInput(context, inputNumber, clientId, valueToRender);
-        encodeHiddenInput(context, inputNumber, clientId, valueToRender);
+        encodeInput(context, inputNumber, clientId, markupValue);
+        encodeHiddenInput(context, inputNumber, clientId, markupValue);
 
         writer.endElement("span");
     }
@@ -230,12 +218,12 @@ public class InputNumberRenderer extends InputRenderer<InputNumber> {
         writer.endElement("input");
     }
 
-    protected void encodeScript(FacesContext context, InputNumber inputNumber, Object value, String valueToRender)
-            throws IOException {
+    @Override
+    protected void encodeScript(FacesContext context, InputNumber inputNumber) throws IOException {
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.init(InputNumber.class.getSimpleName(), inputNumber.resolveWidgetVar(), inputNumber.getClientId());
         wb.attr("disabled", inputNumber.isDisabled())
-                .attr("valueToRender", formatForPlugin(valueToRender, inputNumber, value));
+                .attr("valueToRender", formatForPlugin(markupValue, inputNumber, widgetValue));
 
         String metaOptions = getOptions(inputNumber);
         if (!metaOptions.isEmpty()) {

@@ -23,23 +23,22 @@
  */
 package org.primefaces.component.texteditor;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import org.primefaces.context.PrimeApplicationContext;
+import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.ComponentUtils;
+import org.primefaces.util.EscapeUtils;
+import org.primefaces.util.HtmlSanitizer;
+import org.primefaces.util.WidgetBuilder;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import org.primefaces.context.PrimeApplicationContext;
-
-import org.primefaces.renderkit.InputRenderer;
-import org.primefaces.util.ComponentUtils;
-import org.primefaces.util.EscapeUtils;
-import org.primefaces.util.HtmlSanitizer;
-import org.primefaces.util.WidgetBuilder;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class TextEditorRenderer extends InputRenderer<TextEditor> {
 
@@ -78,6 +77,7 @@ public class TextEditorRenderer extends InputRenderer<TextEditor> {
         editor.setSubmittedValue(value);
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, TextEditor editor) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = editor.getClientId(context);
@@ -124,6 +124,7 @@ public class TextEditorRenderer extends InputRenderer<TextEditor> {
         writer.endElement("div");
     }
 
+    @Override
     protected void encodeScript(FacesContext context, TextEditor editor) throws IOException {
         String clientId = editor.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);

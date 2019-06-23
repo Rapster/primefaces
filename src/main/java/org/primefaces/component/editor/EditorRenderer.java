@@ -23,9 +23,10 @@
  */
 package org.primefaces.component.editor;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.logging.Logger;
+import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.AgentUtils;
+import org.primefaces.util.ComponentUtils;
+import org.primefaces.util.WidgetBuilder;
 
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
@@ -33,11 +34,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-
-import org.primefaces.renderkit.InputRenderer;
-import org.primefaces.util.AgentUtils;
-import org.primefaces.util.ComponentUtils;
-import org.primefaces.util.WidgetBuilder;
+import java.io.IOException;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class EditorRenderer extends InputRenderer<Editor> {
 
@@ -64,6 +63,7 @@ public class EditorRenderer extends InputRenderer<Editor> {
         editor.setSubmittedValue(value);
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, Editor editor) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = editor.getClientId(context);
@@ -93,6 +93,7 @@ public class EditorRenderer extends InputRenderer<Editor> {
         writer.endElement("div");
     }
 
+    @Override
     protected void encodeScript(FacesContext context, Editor editor) throws IOException {
         String clientId = editor.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
