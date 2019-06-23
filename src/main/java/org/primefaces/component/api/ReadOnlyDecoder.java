@@ -1,9 +1,8 @@
 package org.primefaces.component.api;
 
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-public interface ReadOnlyDecoder {
+public interface ReadOnlyDecoder<T> {
 
-    Object decodeReadOnlyValue(FacesContext context, UIInput component);
+    Object decodeReadOnlyValue(FacesContext context, T component);
 }

@@ -3,14 +3,13 @@ package org.primefaces.component.api;
 import org.primefaces.renderkit.DefaultReadOnlyDecoder;
 import org.primefaces.util.LangUtils;
 
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class UIItemsReadOnlyDecoder implements ReadOnlyDecoder {
+public class UIItemsReadOnlyDecoder implements ReadOnlyDecoder<UIItemsComponent> {
 
     public static final ReadOnlyDecoder INSTANCE = new UIItemsReadOnlyDecoder();
 
@@ -19,9 +18,8 @@ public class UIItemsReadOnlyDecoder implements ReadOnlyDecoder {
     }
 
     @Override
-    public Object decodeReadOnlyValue(FacesContext context, UIInput component) {
-        UIItemsComponent comp = (UIItemsComponent) component;
-        String var = ((UIItemsComponent) component).getVar();
+    public Object decodeReadOnlyValue(FacesContext context, UIItemsComponent component) {
+        String var = component.getVar();
         if (!LangUtils.isValueBlank(var)) {
             List<String> values = new ArrayList<>();
             Object inputValue = component.getValue();
@@ -31,7 +29,7 @@ public class UIItemsReadOnlyDecoder implements ReadOnlyDecoder {
 
             for (Object value : (Collection) inputValue) {
                 context.getExternalContext().getRequestMap().put(var, value);
-                values.add(comp.getItemLabel());
+                values.add(component.getItemLabel());
             }
             context.getExternalContext().getRequestMap().remove(var);
             return values;

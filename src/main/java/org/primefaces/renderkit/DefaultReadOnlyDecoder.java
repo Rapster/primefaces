@@ -6,7 +6,7 @@ import org.primefaces.util.ComponentUtils;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-public class DefaultReadOnlyDecoder implements ReadOnlyDecoder {
+public class DefaultReadOnlyDecoder implements ReadOnlyDecoder<UIInput> {
 
     public static final ReadOnlyDecoder INSTANCE = new DefaultReadOnlyDecoder();
 

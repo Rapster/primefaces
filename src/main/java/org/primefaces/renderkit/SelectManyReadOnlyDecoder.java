@@ -3,6 +3,7 @@ package org.primefaces.renderkit;
 import org.primefaces.component.api.ReadOnlyDecoder;
 
 import javax.faces.component.UIInput;
+import javax.faces.component.UISelectMany;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class SelectManyReadOnlyDecoder implements ReadOnlyDecoder {
+public class SelectManyReadOnlyDecoder implements ReadOnlyDecoder<UISelectMany> {
 
     public static final ReadOnlyDecoder INSTANCE = new SelectManyReadOnlyDecoder();
 
@@ -20,7 +21,7 @@ public class SelectManyReadOnlyDecoder implements ReadOnlyDecoder {
     }
 
     @Override
-    public Object decodeReadOnlyValue(FacesContext context, UIInput component) {
+    public Object decodeReadOnlyValue(FacesContext context, UISelectMany component) {
         List<SelectItem> items = SelectRenderer.getSelectItems(context, component);
         Collection<String> values = new ArrayList<>();
         Collection<Object> inputs = convertInputValues(component);
