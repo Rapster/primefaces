@@ -23,28 +23,26 @@
  */
 package org.primefaces.component.datepicker;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.ConverterException;
-
 import org.primefaces.component.api.UICalendar;
 import org.primefaces.component.calendar.BaseCalendarRenderer;
 import org.primefaces.expression.SearchExpressionFacade;
 import org.primefaces.util.CalendarUtils;
 import org.primefaces.util.WidgetBuilder;
 
-public class DatePickerRenderer extends BaseCalendarRenderer {
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.faces.convert.ConverterException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+public class DatePickerRenderer extends BaseCalendarRenderer<DatePicker> {
 
     @Override
-    protected void encodeMarkup(FacesContext context, UICalendar uicalendar, String value) throws IOException {
-        DatePicker datepicker = (DatePicker) uicalendar;
+    protected void encodeMarkup(FacesContext context, DatePicker datepicker) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = datepicker.getClientId(context);
         String styleClass = datepicker.getStyleClass();
@@ -69,15 +67,14 @@ public class DatePickerRenderer extends BaseCalendarRenderer {
         }
 
         //input
-        encodeInput(context, datepicker, inputId, value, !inline);
+        encodeInput(context, datepicker, inputId, markupValue, !inline);
 
         writer.endElement("span");
 
     }
 
     @Override
-    protected void encodeScript(FacesContext context, UICalendar uicalendar, String value) throws IOException {
-        DatePicker datepicker = (DatePicker) uicalendar;
+    protected void encodeScript(FacesContext context, DatePicker datepicker) throws IOException {
         String clientId = datepicker.getClientId(context);
         Locale locale = datepicker.calculateLocale(context);
         String pattern = datepicker.isTimeOnly() ? datepicker.calculateTimeOnlyPattern() : datepicker.calculatePattern();
@@ -89,8 +86,8 @@ public class DatePickerRenderer extends BaseCalendarRenderer {
         if (datepicker.isConversionFailed()) {
             defaultDate = CalendarUtils.getValueAsString(context, datepicker, new Date());
         }
-        else if (!isValueBlank(value)) {
-            defaultDate = value;
+        else if (!isValueBlank(widgetValue)) {
+            defaultDate = widgetValue;
         }
 
         wb.attr("defaultDate", defaultDate, null)

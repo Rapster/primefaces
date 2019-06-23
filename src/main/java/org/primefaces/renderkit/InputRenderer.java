@@ -23,6 +23,7 @@
  */
 package org.primefaces.renderkit;
 
+import org.primefaces.component.api.InputHolder;
 import org.primefaces.component.api.RTLAware;
 import org.primefaces.component.api.ReadOnlyDecoder;
 import org.primefaces.config.PrimeConfiguration;
@@ -41,12 +42,11 @@ import java.io.IOException;
 import java.util.Collection;
 
 public abstract class InputRenderer<T extends UIInput> extends CoreRenderer {
-import org.primefaces.util.LangUtils;
 
     private ReadOnlyDecoder readOnlyDecoder;
 
     public InputRenderer() {
-        this.readOnlyDecoder = DefaultReadOnlyDecoder.INSTANCE;
+        readOnlyDecoder = DefaultReadOnlyDecoder.INSTANCE;
     }
 
     @Override

@@ -24,21 +24,18 @@
 package org.primefaces.component.calendar;
 
 import org.primefaces.util.CalendarUtils;
+import org.primefaces.util.WidgetBuilder;
+
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import org.primefaces.component.api.UICalendar;
-
-import org.primefaces.util.WidgetBuilder;
-
-public class CalendarRenderer extends BaseCalendarRenderer {
+public class CalendarRenderer extends BaseCalendarRenderer<Calendar> {
 
     @Override
-    protected void encodeMarkup(FacesContext context, UICalendar uicalendar, String value) throws IOException {
-        Calendar calendar = (Calendar) uicalendar;
+    protected void encodeMarkup(FacesContext context, Calendar calendar) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = calendar.getClientId(context);
         String styleClass = calendar.getStyleClass();
@@ -62,15 +59,14 @@ public class CalendarRenderer extends BaseCalendarRenderer {
         }
 
         //input
-        encodeInput(context, calendar, inputId, value, popup);
+        encodeInput(context, calendar, inputId, markupValue, popup);
 
         writer.endElement("span");
 
     }
 
     @Override
-    protected void encodeScript(FacesContext context, UICalendar uicalendar, String value) throws IOException {
-        Calendar calendar = (Calendar) uicalendar;
+    protected void encodeScript(FacesContext context, Calendar calendar) throws IOException {
         String clientId = calendar.getClientId(context);
         Locale locale = calendar.calculateLocale(context);
         String pattern = calendar.isTimeOnly() ? calendar.calculateTimeOnlyPattern() : calendar.calculatePattern();
@@ -89,8 +85,8 @@ public class CalendarRenderer extends BaseCalendarRenderer {
         if (calendar.isConversionFailed()) {
             defaultDate = CalendarUtils.getValueAsString(context, calendar, new Date());
         }
-        else if (!isValueBlank(value)) {
-            defaultDate = value;
+        else if (!isValueBlank(widgetValue)) {
+            defaultDate = widgetValue;
         }
         else if (pagedate != null) {
             defaultDate = CalendarUtils.getValueAsString(context, calendar, pagedate);

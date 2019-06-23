@@ -23,12 +23,16 @@
  */
 package org.primefaces.component.selectbooleancheckbox;
 
-import java.io.IOException;
+import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.ComponentUtils;
+import org.primefaces.util.HTML;
+import org.primefaces.util.WidgetBuilder;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
+import java.io.IOException;
 
 public class SelectBooleanCheckboxRenderer extends InputRenderer<SelectBooleanCheckbox> {
 
@@ -57,6 +61,7 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer<SelectBooleanCh
         return value.equalsIgnoreCase("on") || value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true");
     }
 
+    @Override
     protected void encodeMarkup(FacesContext context, SelectBooleanCheckbox checkbox) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = checkbox.getClientId(context);
@@ -158,6 +163,7 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer<SelectBooleanCh
         }
     }
 
+    @Override
     protected void encodeScript(FacesContext context, SelectBooleanCheckbox checkbox) throws IOException {
         String clientId = checkbox.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
