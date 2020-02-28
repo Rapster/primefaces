@@ -23,18 +23,18 @@
  */
 package org.primefaces.model;
 
-import java.util.Locale;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
 import org.primefaces.component.api.DynamicColumn;
+
+import javax.el.ValueExpression;
+import java.util.Locale;
 
 public class DynamicChainedPropertyComparator extends BeanPropertyComparator {
 
     private DynamicColumn column;
 
-    public DynamicChainedPropertyComparator(DynamicColumn column, ValueExpression sortBy, String var, SortOrder sortOrder, MethodExpression sortFunction,
+    public DynamicChainedPropertyComparator(DynamicColumn column, String var, SortMeta sortMeta,
             boolean caseSensitiveSort, Locale locale, int nullSortOrder) {
-        super(sortBy, var, sortOrder, sortFunction, caseSensitiveSort, locale, nullSortOrder);
+        super(var, sortMeta, caseSensitiveSort, locale, nullSortOrder);
         this.column = column;
     }
 

@@ -30,6 +30,7 @@ import org.primefaces.model.SortMeta;
 import javax.el.MethodExpression;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public abstract class DataTableBase extends UIData
@@ -54,9 +55,6 @@ public abstract class DataTableBase extends UIData
         rowStyleClass,
         onExpandStart,
         resizableColumns,
-        sortBy,
-        sortOrder,
-        sortFunction,
         scrollRows,
         rowKey,
         filterEvent,
@@ -66,7 +64,6 @@ public abstract class DataTableBase extends UIData
         draggableColumns,
         editable,
         filteredValue,
-        sortMode,
         editMode,
         editingRow,
         cellSeparator,
@@ -86,8 +83,6 @@ public abstract class DataTableBase extends UIData
         caseSensitiveSort,
         skipChildren,
         disabledTextSelection,
-        sortField,
-        initMode,
         nullSortOrder,
         tabindex,
         reflow,
@@ -99,7 +94,6 @@ public abstract class DataTableBase extends UIData
         clientCache,
         multiViewState,
         filterBy,
-        sortMeta,
         globalFilter,
         cellEditMode,
         expandableRowGroups,
@@ -112,8 +106,7 @@ public abstract class DataTableBase extends UIData
         disableContextMenuIfEmpty,
         escapeText,
         rowEditMode,
-        stickyTopAt,
-        globalFilterFunction
+        stickyTopAt
     }
 
     public DataTableBase() {
@@ -229,30 +222,6 @@ public abstract class DataTableBase extends UIData
         getStateHelper().put(PropertyKeys.resizableColumns, resizableColumns);
     }
 
-    public Object getSortBy() {
-        return getStateHelper().eval(PropertyKeys.sortBy, null);
-    }
-
-    public void setSortBy(Object sortBy) {
-        getStateHelper().put(PropertyKeys.sortBy, sortBy);
-    }
-
-    public String getSortOrder() {
-        return (String) getStateHelper().eval(PropertyKeys.sortOrder, "ascending");
-    }
-
-    public void setSortOrder(String sortOrder) {
-        getStateHelper().put(PropertyKeys.sortOrder, sortOrder);
-    }
-
-    public javax.el.MethodExpression getSortFunction() {
-        return (javax.el.MethodExpression) getStateHelper().eval(PropertyKeys.sortFunction, null);
-    }
-
-    public void setSortFunction(javax.el.MethodExpression sortFunction) {
-        getStateHelper().put(PropertyKeys.sortFunction, sortFunction);
-    }
-
     public int getScrollRows() {
         return (Integer) getStateHelper().eval(PropertyKeys.scrollRows, 0);
     }
@@ -323,14 +292,6 @@ public abstract class DataTableBase extends UIData
 
     public void setFilteredValue(java.util.List<?> filteredValue) {
         getStateHelper().put(PropertyKeys.filteredValue, filteredValue);
-    }
-
-    public String getSortMode() {
-        return (String) getStateHelper().eval(PropertyKeys.sortMode, "single");
-    }
-
-    public void setSortMode(String sortMode) {
-        getStateHelper().put(PropertyKeys.sortMode, sortMode);
     }
 
     public String getEditMode() {
@@ -486,22 +447,6 @@ public abstract class DataTableBase extends UIData
         getStateHelper().put(PropertyKeys.disabledTextSelection, disabledTextSelection);
     }
 
-    public String getSortField() {
-        return (String) getStateHelper().eval(PropertyKeys.sortField, null);
-    }
-
-    public void setSortField(String sortField) {
-        getStateHelper().put(PropertyKeys.sortField, sortField);
-    }
-
-    public String getInitMode() {
-        return (String) getStateHelper().eval(PropertyKeys.initMode, "load");
-    }
-
-    public void setInitMode(String initMode) {
-        getStateHelper().put(PropertyKeys.initMode, initMode);
-    }
-
     public int getNullSortOrder() {
         return (Integer) getStateHelper().eval(PropertyKeys.nullSortOrder, 1);
     }
@@ -583,21 +528,13 @@ public abstract class DataTableBase extends UIData
         getStateHelper().put(PropertyKeys.multiViewState, multiViewState);
     }
 
-    public Map<String, FilterMeta> getFilterBy() {
-        return (Map<String, FilterMeta>) getStateHelper().eval(PropertyKeys.filterBy, Collections.emptyMap());
-    }
-
-    public void setFilterBy(Map<String, FilterMeta> filterBy) {
-        getStateHelper().put(PropertyKeys.filterBy, filterBy);
-    }
-
-    public Map<String, SortMeta> getSortMeta() {
-        return (Map<String, SortMeta>) getStateHelper().eval(PropertyKeys.sortMeta, Collections.emptyMap());
-    }
-
-    public void setSortMeta(Map<String, SortMeta> sortMeta) {
-        getStateHelper().put(PropertyKeys.sortMeta, sortMeta);
-    }
+//    public Map<String, FilterMeta> getFilterBy() {
+//        return (Map<String, FilterMeta>) getStateHelper().eval(PropertyKeys.filterBy, Collections.emptyMap());
+//    }
+//
+//    public void setFilterBy(Map<String, FilterMeta> filterBy) {
+//        getStateHelper().put(PropertyKeys.filterBy, filterBy);
+//    }
 
     public String getGlobalFilter() {
         return (String) getStateHelper().eval(PropertyKeys.globalFilter, null);
@@ -701,13 +638,5 @@ public abstract class DataTableBase extends UIData
 
     public void setStickyTopAt(String stickyTopAt) {
         getStateHelper().put(PropertyKeys.stickyTopAt, stickyTopAt);
-    }
-
-    public MethodExpression getGlobalFilterFunction() {
-        return (MethodExpression) getStateHelper().eval(PropertyKeys.globalFilterFunction, null);
-    }
-
-    public void setGlobalFilterFunction(MethodExpression globalFilterFunction) {
-        getStateHelper().put(PropertyKeys.globalFilterFunction, globalFilterFunction);
     }
 }

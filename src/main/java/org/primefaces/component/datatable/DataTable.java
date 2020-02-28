@@ -25,9 +25,10 @@ package org.primefaces.component.datatable;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.el.ELContext;
-import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.ResourceDependencies;
@@ -194,7 +195,8 @@ public class DataTable extends DataTableBase {
     private String resizableColumnsAsString;
     private Map<String, String> resizableColsMap;
     private List<UIComponent> iterableChildren;
-
+    private Map<String, SortMeta> sortMetas;
+    private Map<String, FilterMeta> filterMetas;
     public DataTableFeature getFeature(DataTableFeatureKey key) {
         return FEATURES.get(key);
     }
@@ -299,7 +301,7 @@ public class DataTable extends DataTableBase {
             setSelection(null);
         }
 
-        Map<String, FilterMeta> filterBy = getFilterBy();
+        Map<String, FilterMeta> filterBy = getFilterMeta();
         if (!filterBy.isEmpty()) {
             ELContext elContext = context.getELContext();
             for (FilterMeta filter : filterBy.values()) {
@@ -365,12 +367,12 @@ public class DataTable extends DataTableBase {
                     String[] sortDirs = params.get(clientId + "_sortDir").split(",");
                     String[] sortKeys = params.get(clientId + "_sortKey").split(",");
 
-                    order = SortOrder.valueOf(((SortFeature) FEATURES.get(DataTableFeatureKey.SORT)).convertSortOrderParam(sortDirs[sortDirs.length - 1]));
+                    order = SortOrder.of(sortDirs[sortDirs.length - 1]);
                     sortColumn = findColumn(sortKeys[sortKeys.length - 1]);
                     sortColumnIndex = sortKeys.length - 1;
                 }
                 else {
-                    order = SortOrder.valueOf(((SortFeature) FEATURES.get(DataTableFeatureKey.SORT)).convertSortOrderParam(params.get(clientId + "_sortDir")));
+                    order = SortOrder.of(params.get(clientId + "_sortDir"));
                     sortColumn = findColumn(params.get(clientId + "_sortKey"));
                 }
 
@@ -544,76 +546,41 @@ public class DataTable extends DataTableBase {
     }
 
     public void loadLazyData() {
-        DataModel model = getDataModel();
+        LazyDataModel lazyModel = (LazyDataModel) getDataModel();
 
-        if (model instanceof LazyDataModel) {
-            LazyDataModel lazyModel = (LazyDataModel) model;
-            List<?> data = null;
+        calculateFirst();
 
-            calculateFirst();
+        FacesContext context = getFacesContext();
+        int first = getFirst();
 
-            FacesContext context = getFacesContext();
-            int first = getFirst();
+        if (isClientCacheRequest(context)) {
+            Map<String, String> params = context.getExternalContext().getRequestParameterMap();
+            first = Integer.parseInt(params.get(getClientId(context) + "_first")) + getRows();
+        }
 
-            if (isClientCacheRequest(context)) {
-                Map<String, String> params = context.getExternalContext().getRequestParameterMap();
-                first = Integer.parseInt(params.get(getClientId(context) + "_first")) + getRows();
-            }
+        List<?> data = lazyModel.load(first, getRows(), getSortMeta(), getFilterMeta());
 
-            if (isMultiSort()) {
-                data = lazyModel.load(first, getRows(), getSortMeta(), getFilterBy());
-            }
-            else {
-                data = lazyModel.load(first, getRows(), resolveSortField(), convertSortOrder(), getFilterBy());
-            }
+        lazyModel.setPageSize(getRows());
+        lazyModel.setWrappedData(data);
 
-            lazyModel.setPageSize(getRows());
-            lazyModel.setWrappedData(data);
-
-            //Update paginator/livescroller for callback
-            if (ComponentUtils.isRequestSource(this, context) && (isPaginator() || isLiveScroll() || isVirtualScroll())) {
-                PrimeFaces.current().ajax().addCallbackParam("totalRecords", lazyModel.getRowCount());
-            }
+        //Update paginator/livescroller for callback
+        if (ComponentUtils.isRequestSource(this, context) && (isPaginator() || isLiveScroll() || isVirtualScroll())) {
+            PrimeFaces.current().ajax().addCallbackParam("totalRecords", lazyModel.getRowCount());
         }
     }
 
     public void loadLazyScrollData(int offset, int rows) {
-        DataModel model = getDataModel();
+        LazyDataModel lazyModel = (LazyDataModel) getDataModel();
 
-        if (model instanceof LazyDataModel) {
-            LazyDataModel lazyModel = (LazyDataModel) model;
+        List<?> data = lazyModel.load(offset, rows, getSortMeta(), getFilterMeta());
 
-            List<?> data = null;
-            if (isMultiSort()) {
-                data = lazyModel.load(offset, rows, getSortMeta(), getFilterBy());
-            }
-            else {
-                data = lazyModel.load(offset, rows, resolveSortField(), convertSortOrder(), getFilterBy());
-            }
+        lazyModel.setPageSize(rows);
+        lazyModel.setWrappedData(data);
 
-            lazyModel.setPageSize(rows);
-            lazyModel.setWrappedData(data);
-
-            //Update paginator/livescroller  for callback
-            if (ComponentUtils.isRequestSource(this, getFacesContext()) && (isPaginator() || isLiveScroll() || isVirtualScroll())) {
-                PrimeFaces.current().ajax().addCallbackParam("totalRecords", lazyModel.getRowCount());
-            }
+        //Update paginator/livescroller  for callback
+        if (ComponentUtils.isRequestSource(this, getFacesContext()) && (isPaginator() || isLiveScroll() || isVirtualScroll())) {
+            PrimeFaces.current().ajax().addCallbackParam("totalRecords", lazyModel.getRowCount());
         }
-    }
-
-    protected String resolveSortField() {
-        UIColumn column = getSortColumn();
-        if (column == null) {
-            String sortField = getSortField();
-            if (sortField == null) {
-                ValueExpression tableSortByVE = getValueExpression(PropertyKeys.sortBy.toString());
-                sortField = (tableSortByVE == null) ? (String) getSortBy() : resolveStaticField(tableSortByVE);
-            }
-
-            return sortField;
-        }
-
-        return resolveColumnField(column);
     }
 
     public String resolveColumnField(UIColumn column) {
@@ -634,17 +601,6 @@ public class DataTable extends DataTableBase {
                 field = (columnSortByVE == null) ? (String) column.getSortBy() : resolveStaticField(columnSortByVE);
             }
             return field;
-        }
-    }
-
-    public SortOrder convertSortOrder() {
-        String sortOrder = getSortOrder();
-
-        if (sortOrder == null) {
-            return SortOrder.UNSORTED;
-        }
-        else {
-            return SortOrder.valueOf(sortOrder.toUpperCase(Locale.ENGLISH));
         }
     }
 
@@ -709,19 +665,14 @@ public class DataTable extends DataTableBase {
     public void resetValue() {
         setValue(null);
         setFilteredValue(null);
-        setFilterBy(null);
+        setFilterMetas(null);
     }
 
     public void reset() {
         resetValue();
         setFirst(0);
         reset = true;
-        setValueExpression("sortBy", getDefaultSortByVE());
-        setSortFunction(getDefaultSortFunction());
-        setSortOrder(getDefaultSortOrder());
-        setSortByVE(null);
         setSortColumn(null);
-        setSortField(null);
         setDefaultSort(true);
         setSortMeta(null);
     }
@@ -1044,9 +995,7 @@ public class DataTable extends DataTableBase {
     }
 
     public boolean isMultiSort() {
-        String sortMode = getSortMode();
-
-        return (sortMode != null && sortMode.equals("multiple"));
+        return getSortMeta() != null && sortMetas.size() > 1;
     }
 
     public String resolveSelectionMode() {
@@ -1179,50 +1128,12 @@ public class DataTable extends DataTableBase {
         }
     }
 
-    public ValueExpression getSortByVE() {
-        return sortByVE;
-    }
-
-    public void setSortByVE(ValueExpression ve) {
-        sortByVE = ve;
-    }
-
-    public ValueExpression getDefaultSortByVE() {
-        return getValueExpression("defaultSortBy");
-    }
-
-    public void setDefaultSortByVE(ValueExpression ve) {
-        setValueExpression("defaultSortBy", ve);
-    }
-
-    public String getDefaultSortOrder() {
-        return (String) getStateHelper().get("defaultSortOrder");
-    }
-
-    public void setDefaultSortOrder(String val) {
-        getStateHelper().put("defaultSortOrder", val);
-    }
-
-    public MethodExpression getDefaultSortFunction() {
-        return (MethodExpression) getStateHelper().get("defaultSortFunction");
-    }
-
-    public void setDefaultSortFunction(MethodExpression obj) {
-        getStateHelper().put("defaultSortFunction", obj);
-    }
-
     public boolean isDefaultSort() {
-        Object value = getStateHelper().get("defaultSort");
-        if (value == null) {
-            return true;
-        }
-        else {
-            return (java.lang.Boolean) value;
-        }
+        return Boolean.TRUE == getStateHelper().get("defaultSortOrder");
     }
 
-    public void setDefaultSort(boolean defaultSort) {
-        getStateHelper().put("defaultSort", defaultSort);
+    public void setDefaultSort(boolean val) {
+        getStateHelper().put("defaultSortOrder", val);
     }
 
     public void setTogglableColumnsAsString(String togglableColumnsAsString) {
@@ -1453,21 +1364,13 @@ public class DataTable extends DataTableBase {
             }
 
             setSortMeta(ts.getSortMeta());
-            setValueExpression("sortBy", ts.getSortBy());
-            setSortOrder(ts.getSortOrder());
-            setSortFunction(ts.getSortFunction());
-            setSortField(ts.getSortField());
-            setDefaultSort(false);
-            setDefaultSortByVE(ts.getDefaultSortBy());
-            setDefaultSortOrder(ts.getDefaultSortOrder());
-            setDefaultSortFunction(ts.getDefaultSortFunction());
 
             if (isSelectionEnabled()) {
                 selectedRowKeys = ts.getRowKeys();
                 isRowKeyRestored = true;
             }
 
-            setFilterBy(ts.getFilterBy());
+            setFilterMetas(ts.getFilterBy());
             setColumns(findOrderedColumns(ts.getOrderedColumnsAsString()));
             setTogglableColumnsAsString(ts.getTogglableColumnsAsString());
             setResizableColumnsAsString(ts.getResizableColumnsAsString());
@@ -1490,49 +1393,65 @@ public class DataTable extends DataTableBase {
 
     public String getGroupedColumnIndexes() {
         List<UIColumn> columns = getColumns();
-        int size = columns.size();
-        boolean hasIndex = false;
-        if (size > 0) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("[");
-            for (int i = 0; i < size; i++) {
-                UIColumn column = columns.get(i);
-                if (column.isGroupRow()) {
-                    if (hasIndex) {
-                        sb.append(",");
-                    }
-
-                    sb.append(i);
-                    hasIndex = true;
-                }
-            }
-            sb.append("]");
-
-            return sb.toString();
-        }
-        return null;
+        return IntStream.range(0, columns.size())
+                .filter(i -> columns.get(i).isGroupRow())
+                .mapToObj(Objects::toString)
+                .collect(Collectors.joining(",", "[","]"));
     }
 
     public String getSortMetaAsString(FacesContext context) {
         Map<String, SortMeta> multiSortMeta = getSortMeta();
-        if (multiSortMeta != null && !multiSortMeta.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("['");
-            int i = 0;
-            for (SortMeta sortMeta : multiSortMeta.values()) {
-                if (i > 0) {
-                    sb.append("','");
-                }
-                UIColumn column = findColumn(sortMeta.getColumnKey());
-                sb.append(column.getClientId(context));
-                i++;
-            }
-            sb.append("']");
-
-            return sb.toString();
-        }
-        return null;
+        return multiSortMeta.values().stream()
+                .map(s -> findColumn(s.getColumnKey()).getClientId(context))
+                .collect(Collectors.joining("','", "['", "']"));
     }
 
 
+    public Map<String, SortMeta> getSortMeta() {
+        if (sortMetas == null) {
+            sortMetas = new LinkedHashMap<>(getColumns().size());
+            boolean defaultSort = false;
+            for(UIColumn column : getColumns()) {
+                if (!column.isSortable()) {
+                    continue;
+                }
+
+                SortMeta s = SortMeta.of(column);
+                sortMetas.put(s.getSortField(), s);
+
+                if (!defaultSort && column.isActive()) {
+                    defaultSort = true;
+                }
+            }
+            setDefaultSort(defaultSort);
+        }
+
+
+        return sortMetas;
+    }
+
+    public Map<String, FilterMeta> getFilterMeta() {
+        if (filterMetas == null) {
+            filterMetas = new LinkedHashMap<>(getColumns().size());
+            for(UIColumn column : getColumns()) {
+                if (!column.isFilterable()
+                        || (column.getFilterBy() == null && column.getField() == null)) {
+                    continue;
+                }
+
+                FilterMeta f = FilterMeta.of(column);
+                filterMetas.put(f.getFilterField(), f);
+            }
+        }
+
+        return filterMetas;
+    }
+
+    public void setSortMeta(Map<String, SortMeta> sortMetas) {
+        this.sortMetas = sortMetas;
+    }
+
+    public void setFilterMetas(Map<String, FilterMeta> filterMetas) {
+        this.filterMetas = filterMetas;
+    }
 }

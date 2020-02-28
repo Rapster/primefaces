@@ -25,6 +25,7 @@ package org.primefaces.component.columns;
 
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.api.UIData;
+import org.primefaces.model.SortOrder;
 
 
 public abstract class ColumnsBase extends UIData implements UIColumn {
@@ -64,7 +65,9 @@ public abstract class ColumnsBase extends UIData implements UIColumn {
         exportFunction,
         groupRow,
         exportHeaderValue,
-        exportFooterValue
+        exportFooterValue,
+        active,
+        order;
     }
 
     public ColumnsBase() {
@@ -364,4 +367,21 @@ public abstract class ColumnsBase extends UIData implements UIColumn {
         getStateHelper().put(PropertyKeys.exportFooterValue, exportFooterValue);
     }
 
+    @Override
+    public boolean isActive() {
+        return (Boolean) getStateHelper().eval(PropertyKeys.active, false);
+    }
+
+    public void setActive(boolean active) {
+        getStateHelper().put(PropertyKeys.active, active);
+    }
+
+    @Override
+    public String getOrder() {
+        return (String) getStateHelper().eval(PropertyKeys.order, null);
+    }
+
+    public void setOrder(boolean order) {
+        getStateHelper().put(PropertyKeys.order, order);
+    }
 }

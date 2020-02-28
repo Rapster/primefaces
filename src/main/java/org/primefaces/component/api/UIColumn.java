@@ -124,4 +124,8 @@ public interface UIColumn {
     String getExportHeaderValue();
 
     String getExportFooterValue();
+
+    boolean isActive();
+
+    String getOrder();
 }

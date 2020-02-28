@@ -33,6 +33,7 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.component.celleditor.CellEditor;
 import org.primefaces.component.columns.Columns;
+import org.primefaces.component.columns.ColumnsBase;
 
 public class DynamicColumn implements UIColumn {
 
@@ -302,5 +303,15 @@ public class DynamicColumn implements UIColumn {
     @Override
     public String getExportFooterValue() {
         return columns.getExportFooterValue();
+    }
+
+    @Override
+    public boolean isActive() {
+        return columns.isActive();
+    }
+
+    @Override
+    public String getOrder() {
+        return columns.getOrder();
     }
 }

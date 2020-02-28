@@ -40,21 +40,7 @@ public class DataTableState implements Serializable {
 
     private int rows;
 
-    private Map<String, SortMeta> multiSortState;
-
-    private ValueExpression sortBy;
-
-    private String sortOrder;
-
-    private String sortField;
-
-    private MethodExpression sortFunction;
-
-    private ValueExpression defaultSortBy;
-
-    private String defaultSortOrder;
-
-    private MethodExpression defaultSortFunction;
+    private Map<String, SortMeta> sortMeta;
 
     private List<Object> rowKeys;
 
@@ -83,67 +69,11 @@ public class DataTableState implements Serializable {
     }
 
     public Map<String, SortMeta> getSortMeta() {
-        return multiSortState;
+        return sortMeta;
     }
 
     public void setSortMeta(Map<String, SortMeta> multiSortState) {
-        this.multiSortState = multiSortState;
-    }
-
-    public ValueExpression getSortBy() {
-        return sortBy;
-    }
-
-    public void setSortBy(ValueExpression sortBy) {
-        this.sortBy = sortBy;
-    }
-
-    public String getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public String getSortField() {
-        return sortField;
-    }
-
-    public void setSortField(String sortField) {
-        this.sortField = sortField;
-    }
-
-    public MethodExpression getSortFunction() {
-        return sortFunction;
-    }
-
-    public void setSortFunction(MethodExpression sortFunction) {
-        this.sortFunction = sortFunction;
-    }
-
-    public ValueExpression getDefaultSortBy() {
-        return defaultSortBy;
-    }
-
-    public void setDefaultSortBy(ValueExpression defaultSortBy) {
-        this.defaultSortBy = defaultSortBy;
-    }
-
-    public String getDefaultSortOrder() {
-        return defaultSortOrder;
-    }
-
-    public void setDefaultSortOrder(String defaultSortOrder) {
-        this.defaultSortOrder = defaultSortOrder;
-    }
-
-    public MethodExpression getDefaultSortFunction() {
-        return defaultSortFunction;
-    }
-
-    public void setDefaultSortFunction(MethodExpression defaultSortFunction) {
-        this.defaultSortFunction = defaultSortFunction;
+        this.sortMeta = multiSortState;
     }
 
     public List<Object> getRowKeys() {

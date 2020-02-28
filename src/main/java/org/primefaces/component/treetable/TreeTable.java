@@ -334,11 +334,7 @@ public class TreeTable extends TreeTableBase {
                     dynamicColumn.cleanModel();
                 }
 
-                filterBy.add(new FilterMeta(null,
-                        column.getColumnKey(),
-                        filterByVE,
-                        MatchMode.byName(filterMatchMode),
-                        filterValue));
+                filterBy.add(FilterMeta.of(column));
             }
         }
 

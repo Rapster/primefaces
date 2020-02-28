@@ -52,6 +52,7 @@ import org.primefaces.component.columns.Columns;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.model.CollectionDataModel;
 import org.primefaces.model.IterableDataModel;
+import org.primefaces.model.LazyDataModel;
 import org.primefaces.util.ComponentTraversalUtils;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.SharedStringBuilder;
@@ -218,11 +219,7 @@ public class UIData extends javax.faces.component.UIData {
     }
 
     public boolean isLazy() {
-        return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.lazy, false);
-    }
-
-    public void setLazy(boolean _lazy) {
-        getStateHelper().put(PropertyKeys.lazy, _lazy);
+        return getValue() instanceof LazyDataModel;
     }
 
     public java.lang.String getRowIndexVar() {

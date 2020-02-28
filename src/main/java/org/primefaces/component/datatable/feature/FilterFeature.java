@@ -34,6 +34,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
+
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.api.DynamicColumn;
 import org.primefaces.component.api.UIColumn;
@@ -86,7 +87,7 @@ public class FilterFeature implements DataTableFeature {
     public void decode(FacesContext context, DataTable table) {
         String globalFilterParam = table.getClientId(context) + UINamingContainer.getSeparatorChar(context) + "globalFilter";
         Map<String, FilterMeta> filterBy = populateFilterBy(context, table, globalFilterParam);
-        table.setFilterBy(filterBy);
+        table.setFilterMetas(filterBy);
     }
 
     @Override
@@ -123,20 +124,13 @@ public class FilterFeature implements DataTableFeature {
             }
         }
         else {
-            filter(context, table, table.getFilterBy());
+            filter(context, table, table.getFilterMeta());
 
             //sort new filtered data to restore sort state
-            boolean sorted = table.getValueExpression(DataTable.PropertyKeys.sortBy.toString()) != null
-                    || table.getSortBy() != null;
+            boolean sorted = !table.getSortMeta().isEmpty();
             if (sorted) {
                 SortFeature sortFeature = (SortFeature) table.getFeature(DataTableFeatureKey.SORT);
-
-                if (table.isMultiSort()) {
-                    sortFeature.multiSort(context, table);
-                }
-                else {
-                    sortFeature.singleSort(context, table);
-                }
+                sortFeature.sort(context, table);
             }
         }
 
@@ -145,7 +139,7 @@ public class FilterFeature implements DataTableFeature {
         renderer.encodeTbody(context, table, true);
 
         if (table.isMultiViewState()) {
-            Map<String, FilterMeta> filterBy = table.getFilterBy();
+            Map<String, FilterMeta> filterBy = table.getFilterMeta();
             Map<String, FilterMeta> filterByCopy = new HashMap<>(filterBy.size());
 
             for (Map.Entry<String, FilterMeta> filter : filterBy.entrySet()) {
@@ -167,14 +161,8 @@ public class FilterFeature implements DataTableFeature {
         Locale filterLocale = table.resolveDataLocale();
         FilterMeta globalFilter = filterBy.get("globalFilter");
         GlobalFilterConstraint globalFilterConstraint = (GlobalFilterConstraint) FILTER_CONSTRAINTS.get(MatchMode.GLOBAL);
-        MethodExpression globalFilterFunction = table.getGlobalFilterFunction();
+        MethodExpression globalFilterFunction = null;//table.getGlobalFilterFunction();
         ELContext elContext = context.getELContext();
-
-        for (FilterMeta filter : filterBy.values()) {
-            if (filter.getColumn() == null) {
-                filter.setColumn(table.findColumn(filter.getColumnKey()));
-            }
-        }
 
         for (int i = 0; i < table.getRowCount(); i++) {
             table.setRowIndex(i);
@@ -200,7 +188,9 @@ public class FilterFeature implements DataTableFeature {
                     ((DynamicColumn) column).applyStatelessModel();
                 }
 
-                Object columnValue = filterByVE.getValue(elContext);
+                Object columnValue = filterByVE != null
+                        ? filterByVE.getValue(elContext)
+                        : getValueFromVarField(table.getVar(), filter.getFilterField());
                 FilterConstraint filterConstraint = getFilterConstraint(column);
 
                 if (globalFilter != null && !globalMatch && globalFilterFunction == null) {
@@ -244,19 +234,9 @@ public class FilterFeature implements DataTableFeature {
     }
 
     public boolean isFilterValueEmpty(Object filterValue) {
-        if (filterValue == null) {
-            return true;
-        }
-
-        if (filterValue.getClass().isArray() && Array.getLength(filterValue) == 0) {
-            return true;
-        }
-
-        if (LangUtils.isValueBlank(filterValue.toString())) {
-            return true;
-        }
-
-        return false;
+        return filterValue == null
+                || filterValue.getClass().isArray() && Array.getLength(filterValue) == 0
+                || LangUtils.isValueBlank(filterValue.toString());
     }
 
     public String getFilterField(DataTable table, UIColumn column) {
@@ -347,11 +327,7 @@ public class FilterFeature implements DataTableFeature {
                                 }
 
                                 String filterField = getFilterField(dataTable, column);
-                                filterBy.put(filterField, new FilterMeta(filterField,
-                                        column.getColumnKey(),
-                                        filterVE,
-                                        MatchMode.byName(column.getFilterMatchMode()),
-                                        filterValue));
+                                filterBy.put(filterField, FilterMeta.of(column));
                             }
                         }
                     }
@@ -374,11 +350,7 @@ public class FilterFeature implements DataTableFeature {
                                     }
 
                                     String filterField = getFilterField(dataTable, dynaColumn);
-                                    filterBy.put(filterField, new FilterMeta(filterField,
-                                            dynaColumn.getColumnKey(),
-                                            filterVE,
-                                            MatchMode.byName(dynaColumn.getFilterMatchMode()),
-                                            filterValue));
+                                    filterBy.put(filterField, FilterMeta.of(dynaColumn));
                                 }
                             }
                         }
@@ -418,11 +390,7 @@ public class FilterFeature implements DataTableFeature {
                 }
 
                 String filterField = getFilterField(table, column);
-                filterBy.put(filterField, new FilterMeta(filterField,
-                        column.getColumnKey(),
-                        filterVE,
-                        MatchMode.byName(filterMatchMode),
-                        filterValue));
+                filterBy.put(filterField, FilterMeta.of(column));
             }
         }
     }
@@ -446,7 +414,7 @@ public class FilterFeature implements DataTableFeature {
     public FilterConstraint getFilterConstraint(UIColumn column) {
         String filterMatchMode = column.getFilterMatchMode();
 
-        MatchMode matchMode = MatchMode.byName(filterMatchMode);
+        MatchMode matchMode = MatchMode.of(filterMatchMode);
         if (matchMode == null) {
             throw new FacesException("Illegal filter match mode:" + filterMatchMode);
         }
@@ -459,4 +427,10 @@ public class FilterFeature implements DataTableFeature {
         return filterConstraint;
     }
 
+    private Object getValueFromVarField(String var, String field) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        return context.getApplication().getExpressionFactory()
+                .createValueExpression(context.getELContext(),"#{" + var + "." + field + "}", String.class)
+                .getValue(context.getELContext());
+    }
 }

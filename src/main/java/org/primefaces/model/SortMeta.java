@@ -23,8 +23,13 @@
  */
 package org.primefaces.model;
 
+import org.primefaces.component.api.UIColumn;
+import org.primefaces.component.column.ColumnBase;
+import org.primefaces.component.datatable.DataTableBase;
+
 import java.io.Serializable;
 import javax.el.MethodExpression;
+import javax.el.ValueExpression;
 
 public class SortMeta implements Serializable {
 
@@ -32,24 +37,35 @@ public class SortMeta implements Serializable {
 
     private String columnKey;
     private String sortField;
-    private SortOrder sortOrder;
+    private SortOrder sortOrder = SortOrder.UNSORTED;
+    private ValueExpression sortBy;
     private MethodExpression sortFunction;
+    private boolean active;
 
     public SortMeta() {
+        // NOOP
     }
 
-    public SortMeta(String columnKey, String sortField, SortOrder sortOrder, MethodExpression sortFunction) {
+    public SortMeta(String columnKey, String sortField, SortOrder sortOrder, MethodExpression sortFunction, ValueExpression sortBy, boolean active) {
         this.columnKey = columnKey;
         this.sortField = sortField;
-        this.sortOrder = sortOrder;
+        this.sortOrder = sortOrder == null ? SortOrder.ASCENDING : sortOrder;
         this.sortFunction = sortFunction;
+        this.sortBy = sortBy;
+        this.active = active;
     }
 
     public SortMeta(SortMeta sortMeta) {
-        this.columnKey = sortMeta.getColumnKey();
-        this.sortField = sortMeta.getSortField();
-        this.sortOrder = sortMeta.getSortOrder();
-        this.sortFunction = sortMeta.getSortFunction();
+        this(sortMeta.columnKey, sortMeta.sortField, sortMeta.sortOrder, sortMeta.sortFunction, sortMeta.sortBy, sortMeta.active);
+    }
+
+    public static final SortMeta of(UIColumn column) {
+        return new SortMeta(column.getColumnKey(),
+                column.getField(),
+                SortOrder.of(column.getOrder()),
+                column.getSortFunction(),
+                column.getValueExpression(ColumnBase.PropertyKeys.sortBy.name()),
+                column.isActive());
     }
 
     public String getColumnKey() {
@@ -68,9 +84,31 @@ public class SortMeta implements Serializable {
         return sortFunction;
     }
 
+    public ValueExpression getSortBy() {
+        return sortBy;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setSortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
     @Override
     public String toString() {
-        return "SortMeta [columnKey=" + columnKey + ", sortField=" + sortField + ", sortOrder=" + sortOrder + ", sortFunction="
-                + sortFunction + "]";
+        return "SortMeta{" +
+                "columnKey='" + columnKey + '\'' +
+                ", sortField='" + sortField + '\'' +
+                ", sortOrder=" + sortOrder +
+                ", sortBy=" + sortBy +
+                ", sortFunction=" + sortFunction +
+                ", active=" + active +
+                '}';
     }
 }

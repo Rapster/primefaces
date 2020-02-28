@@ -47,7 +47,7 @@ public enum MatchMode {
         return name;
     }
 
-    public static MatchMode byName(String name) {
+    public static MatchMode of(String name) {
         for (MatchMode mode : MatchMode.values()) {
             if (mode.getName().equals(name)) {
                 return mode;

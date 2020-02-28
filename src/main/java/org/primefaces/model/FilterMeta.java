@@ -25,7 +25,11 @@ package org.primefaces.model;
 
 import java.io.Serializable;
 import javax.el.ValueExpression;
+import javax.faces.context.FacesContext;
+
 import org.primefaces.component.api.UIColumn;
+import org.primefaces.component.column.Column;
+import org.primefaces.component.column.ColumnBase;
 
 public class FilterMeta implements Serializable {
 
@@ -39,7 +43,7 @@ public class FilterMeta implements Serializable {
     private Object filterValue;
 
     public FilterMeta() {
-
+        // NOOP
     }
 
     public FilterMeta(String filterField, Object filterValue) {
@@ -47,21 +51,24 @@ public class FilterMeta implements Serializable {
         this.filterValue = filterValue;
     }
 
-    public FilterMeta(String filterField, String columnKey, ValueExpression filterByVE, MatchMode filterMatchMode, Object filterValue) {
-        this.filterField = filterField;
-        this.columnKey = columnKey;
-        this.filterByVE = filterByVE;
-        this.filterMatchMode = filterMatchMode;
-        this.filterValue = filterValue;
+    public FilterMeta(FilterMeta filterMeta) {
+        this.filterField = filterMeta.filterField;
+        this.filterValue = filterMeta.filterValue;
+        this.columnKey = filterMeta.columnKey;
+        this.column = filterMeta.column;
+        this.filterByVE = filterMeta.filterByVE;
+        this.filterMatchMode = filterMeta.filterMatchMode;
     }
 
-    public FilterMeta(FilterMeta filterMeta) {
-        this.filterField = filterMeta.getFilterField();
-        this.columnKey = filterMeta.getColumnKey();
-        this.filterByVE = filterMeta.getFilterByVE();
-        this.filterMatchMode = filterMeta.getFilterMatchMode();
-        this.filterValue = filterMeta.getFilterValue();
-        this.column = null; // this constructor is currently just a copy-constructor for the TableState, and we don't need the component in the state
+    public static final FilterMeta of(UIColumn column) {
+        FilterMeta f = new FilterMeta();
+        f.filterField = column.getField();
+        f.columnKey = column.getColumnKey();
+        f.filterByVE = column.getValueExpression(ColumnBase.PropertyKeys.filterBy.name());
+        f.filterMatchMode = MatchMode.of(column.getFilterMatchMode());
+        f.filterValue = column.getFilterValue();
+        f.column = column;
+        return f;
     }
 
     public String getFilterField() {
@@ -92,9 +99,22 @@ public class FilterMeta implements Serializable {
         this.column = column;
     }
 
+    private Object getValueFromVarField(String var, String field) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        return context.getApplication().getExpressionFactory()
+                .createValueExpression(context.getELContext(),"#{" + var + "." + field + "}", String.class)
+                .getValue(context.getELContext());
+    }
+
     @Override
     public String toString() {
-        return "FilterMeta [filterField=" + filterField + ", columnKey=" + columnKey + ", filterByVE=" + filterByVE + ", filterMatchMode=" + filterMatchMode
-                    + ", filterValue=" + filterValue + "]";
+        return "FilterMeta{" +
+                "filterField='" + filterField + '\'' +
+                ", columnKey='" + columnKey + '\'' +
+                ", column=" + column +
+                ", filterByVE=" + filterByVE +
+                ", filterMatchMode=" + filterMatchMode +
+                ", filterValue=" + filterValue +
+                '}';
     }
 }

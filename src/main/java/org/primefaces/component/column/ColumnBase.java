@@ -25,6 +25,7 @@ package org.primefaces.component.column;
 
 import javax.faces.component.UIColumn;
 
+import org.primefaces.component.columns.ColumnsBase;
 import org.primefaces.model.menu.MenuColumn;
 
 
@@ -68,7 +69,9 @@ public abstract class ColumnBase extends UIColumn implements org.primefaces.comp
         exportFunction,
         groupRow,
         exportHeaderValue,
-        exportFooterValue
+        exportFooterValue,
+        active,
+        order;
     }
 
     public ColumnBase() {
@@ -375,6 +378,24 @@ public abstract class ColumnBase extends UIColumn implements org.primefaces.comp
 
     public void setExportFooterValue(String exportFooterValue) {
         getStateHelper().put(PropertyKeys.exportFooterValue, exportFooterValue);
+    }
+
+    @Override
+    public boolean isActive() {
+        return (Boolean) getStateHelper().eval(PropertyKeys.active, false);
+    }
+
+    public void setActive(boolean active) {
+        getStateHelper().put(PropertyKeys.active, active);
+    }
+
+    @Override
+    public String getOrder() {
+        return (String) getStateHelper().eval(PropertyKeys.order, null);
+    }
+
+    public void setOrder(String order) {
+        getStateHelper().put(PropertyKeys.order, order);
     }
 
 }
